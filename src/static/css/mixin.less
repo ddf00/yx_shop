@@ -1,0 +1,11 @@
+.onepx(@color){
+    position: relative;
+    &::after{
+        content:"";
+        display: block;
+        width: 100%;
+        background-color: @color;
+        position: absolute;
+        bottom: 0;
+    }
+}
