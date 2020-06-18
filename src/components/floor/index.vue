@@ -1,7 +1,16 @@
 <template>
   <div class="floorContainer">
     <div class="title">
-        <span class="time">限时购</span>
+        <span class="time">限时购 </span> 
+        <van-count-down :time="time" class="timeout" v-if="timebuy">
+            <template v-slot="timeData">
+                <span class="block">{{ timeData.hours }}</span>
+                <span class="colon">:</span>
+                <span class="block">{{ timeData.minutes }}</span>
+                <span class="colon">:</span>
+                <span class="block">{{ timeData.seconds }}</span>
+            </template>
+        </van-count-down>
         <span class="more">更多></span>
     </div>
     <div class="cateContainer">
@@ -42,9 +51,15 @@
 </template>
 
 <script type="text/ecmascript-6">
-  export default {
-     name: 'floor'
-  }
+    export default {
+        name: 'floor',
+        props: ['timebuy'],
+        data() {
+            return {
+                time: 30 * 60 * 60 * 1000,
+            };
+        },
+    }
 </script>
 
 <style lang="less" scoped>
@@ -57,6 +72,27 @@
         padding: 0 30px;
         height: 100px;
         line-height: 100px;
+        position: relative;
+        .timeout {
+            position: absolute;
+            top: 35px;
+            left: 150px;
+        }
+        .colon {
+            display: inline-block;
+            margin: 0 4px;
+            color: #ee0a24;
+        }
+        .block {
+            display: inline-block;
+            width: 34px;
+            height: 34px;
+            line-height: 34px;
+            color: #fff;
+            font-size: 12px;
+            text-align: center;
+            background-color: #333;
+        }
         .more {
             font-size: 24px;
             position: absolute;

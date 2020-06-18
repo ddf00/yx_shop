@@ -30,6 +30,13 @@ router.get('/indexdata',(ctx, next)=>{
   ctx.body = indexData
 })
 
+// 分类数据
+let cateGoryDatas = require('./datas/cateNavDatas.json')
+router.get('/getcategorydatas', async (ctx, next) => {
+  ctx.set('Access-Control-Allow-Origin', '*')
+	ctx.body = cateGoryDatas;
+});
+
 app
   .use(router.routes())
   .use(router.allowedMethods())

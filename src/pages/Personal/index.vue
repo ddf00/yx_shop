@@ -1,10 +1,10 @@
 <template>
   <div class="waterfall-wrapper">
     <ul class="left-waterfall" ref="left">
-      <li class="item" v-for="(item, index) in leftItems" v-bind:style=" {height:item.height+'px'}">{{ index }}</li>
+      <li class="item" v-for="(item, index) in leftItems" :key="index" :style=" {height:item.height+'px'}">{{ index }}</li>
     </ul>
     <ul class="right-waterfall" ref="right">
-      <li class="item" v-for="(item, index) in rightItems" v-bind:style=" {height:item.height+'px'}">{{ index }}</li>
+      <li class="item" v-for="(item, index) in rightItems" :key="index" :style=" {height:item.height+'px'}">{{ index }}</li>
     </ul>
   </div>
 </template>

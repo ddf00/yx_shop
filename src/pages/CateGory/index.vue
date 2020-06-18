@@ -9,85 +9,16 @@
     <div class="contntContainer">
       <div class="leftNav" ref="leftNav">
         <ul class="navList">
-          <li class="navItem active">618专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
-          <li class="navItem">爆品专区</li>
+          <li class="navItem" :class="{active: navId === itemList.id}" @click="changeNavId(itemList.id)" v-for="itemList in cateList" :key="itemList.id">{{itemList.name}}</li>
         </ul>
       </div>
-      <div class="rightList">
-        <img class="banner" src="https://yanxuan.nosdn.127.net/54205f6db78e32eb9c5d1175b7164b01.jpg?quality=75&type=webp&imageView&thumbnail=0x196" alt="">
-        <div class="listContainer">
+      <div class="rightList" ref="rightList" v-if="cateGoryObj">
+        <div class="listContainer" ref="listContainer">
+        <img class="banner" :src="cateGoryObj.imgUrl" alt="">
             <ul class="list">
-              <li class="Item">
-                <img src="https://yanxuan.nosdn.127.net/ddf44708f576246755479a7261932b3b.png?quality=75&type=webp&imageView&thumbnail=144x144" alt="">
-                <div>人气好物</div>
-              </li>
-              <li class="Item">
-                <img src="https://yanxuan.nosdn.127.net/ddf44708f576246755479a7261932b3b.png?quality=75&type=webp&imageView&thumbnail=144x144" alt="">
-                <div>人气好物</div>
-              </li>
-              <li class="Item">
-                <img src="https://yanxuan.nosdn.127.net/ddf44708f576246755479a7261932b3b.png?quality=75&type=webp&imageView&thumbnail=144x144" alt="">
-                <div>人气好物</div>
-              </li>
-              <li class="Item">
-                <img src="https://yanxuan.nosdn.127.net/ddf44708f576246755479a7261932b3b.png?quality=75&type=webp&imageView&thumbnail=144x144" alt="">
-                <div>人气好物</div>
-              </li>
-              <li class="Item">
-                <img src="https://yanxuan.nosdn.127.net/ddf44708f576246755479a7261932b3b.png?quality=75&type=webp&imageView&thumbnail=144x144" alt="">
-                <div>人气好物</div>
-              </li>
-              <li class="Item">
-                <img src="https://yanxuan.nosdn.127.net/ddf44708f576246755479a7261932b3b.png?quality=75&type=webp&imageView&thumbnail=144x144" alt="">
-                <div>人气好物</div>
-              </li>
-              <li class="Item">
-                <img src="https://yanxuan.nosdn.127.net/ddf44708f576246755479a7261932b3b.png?quality=75&type=webp&imageView&thumbnail=144x144" alt="">
-                <div>人气好物</div>
-              </li>
-              <li class="Item">
-                <img src="https://yanxuan.nosdn.127.net/ddf44708f576246755479a7261932b3b.png?quality=75&type=webp&imageView&thumbnail=144x144" alt="">
-                <div>人气好物</div>
-              </li>
-              <li class="Item">
-                <img src="https://yanxuan.nosdn.127.net/ddf44708f576246755479a7261932b3b.png?quality=75&type=webp&imageView&thumbnail=144x144" alt="">
-                <div>人气好物</div>
+              <li class="Item" v-for="item in cateGoryObj.subCateList" :key="item.id">
+                <img :src="item.wapBannerUrl" alt="">
+                <div>{{item.name}}</div>
               </li>
             </ul>
         </div>
@@ -98,21 +29,56 @@
 
 <script type="text/ecmascript-6">
 import BSscroll from "better-scroll";
+import { mapState, mapActions } from "vuex";
+import {reqListData} from "../../api";
 export default {
     name: 'CateGory',
-
+    data() {
+      return {
+        navId: '',
+        cateList: [],
+        indexId: 0
+      }
+    },
     methods: {
       initScroll() {
         this.$nextTick(()=>{
           let leftNavScroll = new BSscroll(this.$refs.leftNav,{
             click: true,
+            scrollY: true
+          })
+          let rightNavScroll = new BSscroll(this.$refs.rightList,{
+            click: true,
+            scrollY: true
+          })
+          let scrollList = new BSscroll(this.$refs.listContainer,{
+            click: true,
+            scrollY: true
           })
         })
+      },
+      async getCateGoryList() {
+        let cateList = await reqListData()
+        this.cateList = cateList
+        this.navId = this.cateList[0].id
+      },
+      changeNavId(navId) {
+        this.navId = navId
       }
+      
     },
     mounted() {
-      this.initScroll()
+      this.getCateGoryList()
     },
+    beforeUpdate(){
+      this.initScroll()
+
+    },
+    computed: {
+      cateGoryObj(){
+        return this.cateList.find(item => item.id === this.navId)
+      }
+    }
 }
 </script>
 
@@ -123,6 +89,11 @@ export default {
     height: 90px;
     padding: 18px 0;
     box-sizing: border-box;
+    z-index: 999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #fff;
     .input {
       width: 690px;
       height: 56px;
@@ -138,10 +109,12 @@ export default {
     }
   }
   .contntContainer {
+    margin-top: 100px;
     display: flex;
-    height: calc(100vh - 90px);
+    height: calc(100vh - 180px);
     box-sizing: border-box;
     border-top: 1px solid #ccc;
+    overflow: hidden;
     .leftNav {
       width: 25%;
       overflow: hidden;
@@ -177,7 +150,6 @@ export default {
         height: 192px;
         display: block;
       }
-      .listContainer {
         .list {
           display: flex;
           flex-wrap: wrap;
@@ -192,7 +164,6 @@ export default {
             }
           }
         }
-      }
     }
   }
 }

@@ -3,7 +3,8 @@ import CateGory from "../pages/CateGory";
 import WorthBuy from "../pages/WorthBuy";
 import ShopCar from "../pages/ShopCar";
 import Personal from "../pages/Personal";
-
+import Login from "../pages/Login";
+import CateNavList from "../components/cateNavList";
 export default [
     {
         path: "/",
@@ -24,5 +25,16 @@ export default [
     {
         path: "/personal",
         component: Personal
+    },
+    {
+        path: "/login",
+        component: Login,
+        meta: {
+            isHide: true
+        }
+    },
+    {
+        path: '/catenavlist',
+        component: CateNavList
     }
 ]
