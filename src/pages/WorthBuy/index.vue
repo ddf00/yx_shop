@@ -64,7 +64,7 @@
                     <span class="name">{{pageItem.nickname}}</span>
                     <span class="see">200k</span>
                   </div>
-                  <div class="subTitle">{{pageItem.subTitle}}</div>
+                  <!-- <div class="subTitle">{{pageItem.subTitle}}</div> -->
                 </li>
             </ul>
             <ul class="listRight">
@@ -127,25 +127,37 @@ export default {
         let scrollEle = new BSscroll(this.$refs.scrollY, {
           click: true,
           scrollY: true,
-          momentum:false,
+          // momentum:false,
           bounce: false,
           scrollbar: true,
-          probeType:3,
+          probeType:1,
+          scrollEnd: true,
           pullUpLoad:true
         })
-        scrollEle.on('scroll',()=>{
+        scrollEle.on('scroll',(pos)=>{
           
-            let top = this.$refs.Sliding.scrollHeight
-            if(scrollEle.maxScrollY < -top) {
-              console.log('scroll')
-              let page = 3
-              this.getWorthList(page,1,true)
-              page++
-              this.getWorthListR(page,1,true)
-              console.log(this.page1List,this.page1List)
+            // console.log(scrollEle.y)
+            // console.log(scrollEle.maxScrollY+30)
+            if(scrollEle.y < scrollEle.maxScrollY+30) {
+              // console.log('触底了')
+              let that = this
+              console.log('1',this)
+              function update(that){
+                let page = 2
+                console.log('2',this)
+                console.log('22')
+                function getreq(that) {
+                  page ++
+                  console.log(page)
+                  console.log('3',this)
+                  that.getWorthList(page,1,true)
+                  that.getWorthListR(page,1,true)
+                }
+                getreq(that)
+              }
+              update(that)
               scrollEle.refresh()
-              console.log(scrollEle.maxScrollY)
-              console.log(top)
+              console.log(this.page1List,this.page2List)
             }
         })
       })
@@ -161,9 +173,11 @@ export default {
     },
     async getWorthList(page,size,update=false) {
       if(update) {
-        let result = await axios.get(`/m/topic/v1/find/recAuto.json?page=${page}&size=${size}`)
+        let result = await axios.get(`/m/topic/v1/find/recAuto.json?page=${page++}&size=${size}`)
         let data = result.data.data.result[0].topics
-        this.page1List.push(data)
+        data.forEach((item)=>{
+            this.page1List.push(item)
+          })
         }else {
           let result = await axios.get(`/m/topic/v1/find/recAuto.json?page=1&size=1`)
           let data = result.data.data.result[0].topics
@@ -174,7 +188,9 @@ export default {
       if(update) {
           let result = await axios.get(`/m/topic/v1/find/recAuto.json?page=${page}&size=${size}`)
           let data = result.data.data.result[0].topics
-          this.page2List.push(data)
+          data.forEach((item)=>{
+            this.page2List.push(item)
+          })
         }else {
           let result = await axios.get(`/m/topic/v1/find/recAuto.json?page=2&size=1`)
           let data = result.data.data.result[0].topics
@@ -189,6 +205,9 @@ export default {
     this.getWorthList(1,1)
     this.getWorthListR(2,1)
   },
+  beforeUpdate(){
+
+  }
 }
 </script>
 
