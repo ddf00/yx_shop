@@ -37,7 +37,7 @@ export default {
       return {
         navId: '',
         cateList: [],
-        indexId: 0
+        // indexId: 0
       }
     },
     methods: {

@@ -15,10 +15,10 @@
          <div class="loginContainer">
              <form>
                  <div class="emailInput">
-                    <input type="text" placeholder="邮箱账号">
+                    <input type="text" placeholder="邮箱账号"  v-model="emailval">
                  </div>
                  <div class="passwordInput">
-                    <input type="password" placeholder="密码">
+                    <input type="password" placeholder="密码" v-model="passwordval">
                  </div>
                 <span>注册账号</span>
                 <span class="forget">忘记密码</span>
@@ -30,6 +30,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+import { Notify } from 'vant';
 import Header from "../../components/Header";
 export default {
      name: 'Login',
@@ -39,12 +40,19 @@ export default {
      data() {
          return {
             showLogin: true,
+            emailval:'',
+            passwordval:''
          }
      },
      methods: {
          submit(event) {
              event.preventDefault();
-         }  
+             if(this.emailval !== /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}/) {
+                 Notify({ type: 'danger', message: '邮箱格式不正确' })
+             }else if (this.passwordval !== /^\w+$/) {
+                 Notify({ type: 'danger', message: '密码不正确' })
+             }
+         }
      }
    
   }

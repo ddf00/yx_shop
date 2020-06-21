@@ -10,7 +10,6 @@ module.exports = {
     open: true,
     host: 'localhost',
     port: 8080,
-    https: true,
     proxy: { //配置跨域
       '/api': {
         target: 'http://localhost:4000', 

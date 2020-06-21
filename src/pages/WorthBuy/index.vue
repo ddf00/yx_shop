@@ -1,13 +1,5 @@
 <template>
   <div class="wothBuyContainer">
-      <!-- <div class="header">
-          <van-icon size="30" class="home" name="wap-home-o" />
-          <span class="title">值得买</span>
-          <div class="rightIcon">
-            <van-icon class="search" size="30" name="search" />
-            <van-icon size="30" name="shopping-cart-o" />
-          </div>
-      </div> -->
       <!-- 头部 -->
       <Header title="值得买"/>
       <div class="scrollY" ref="scrollY">
@@ -20,7 +12,7 @@
             </div>
             <!-- 轮播 -->
             <div class="swiperContainer">
-                  <van-swipe class="my-swipe" indicator-color="#dd1a21" :show-indicators="true" :loop="false" :width="90">
+                  <van-swipe class="my-swipe" ref="my-swipe" indicator-color="#dd1a21" :show-indicators="true" :loop="false" :width="90">
                   <ul class="swiperList">
                     <van-swipe-item style="height: 50%;" v-for="(navItem, index) in navListData" :key="index">
                         <li class="swiperItem">
@@ -36,66 +28,30 @@
             </div>
           </div>
           <!-- 瀑布列表 -->
-          <div class="waterfall">
-            <ul class="listLeft">
-                <li class="itemLeft" v-if="topics[0]">
-                  <img  :src="topics[0].newAppBanner" alt="">
-                  <span class="desc">{{topics[0].title}}</span>
-                  <div class="lookDetail">
-                    <img class="userImg" :src="topics[0].avatar" alt="">
-                    <span class="name">{{topics[0].nickname}}</span>
-                    <span class="see">200k</span>
-                  </div>
-                </li>
-                <li class="itemLeft"  v-if="topics2[0]">
-                  <img :src="topics2[0].newAppBanner" alt="">
-                  <span class="desc">{{topics2[0].title}}</span>
-                  <div class="lookDetail">
-                    <img class="userImg" :src="topics2[0].avatar" alt="">
-                    <span class="name">{{topics2[0].nickname}}</span>
-                    <span class="see">200k</span>
-                  </div>
-                </li>
-                 <li class="itemLeft" v-for="(pageItem, index) in page1List" :key="index">
-                  <img :src="pageItem.picUrl" alt="">
-                  <span class="desc">{{pageItem.title}}</span>
-                  <div class="lookDetail" v-if="index !== 0">
-                    <img class="userImg" :src="pageItem.avatar" alt="">
-                    <span class="name">{{pageItem.nickname}}</span>
-                    <span class="see">200k</span>
-                  </div>
-                  <!-- <div class="subTitle">{{pageItem.subTitle}}</div> -->
-                </li>
-            </ul>
-            <ul class="listRight">
-                <li class="itemRight"  v-if="topics[1]">
-                  <img :src="topics[1].newAppBanner" alt="">
-                  <span class="desc">{{topics[1].title}}</span>
-                  <div class="lookDetail">
-                    <img class="userImg" :src="topics[1].avatar" alt="">
-                    <span class="name">{{topics[1].nickname}}</span>
-                    <span class="see">200k</span>
-                  </div>
-                </li>
-                 <li class="itemRight" v-if="topics2[1]">
-                 <img :src="topics2[1].newAppBanner" alt="">
-                  <span class="desc">{{topics2[1].title}}</span>
-                  <div class="lookDetail">
-                    <img class="userImg" :src="topics2[1].avatar" alt="">
-                    <span class="name">{{topics2[1].nickname}}</span>
-                    <span class="see">200k</span>
-                  </div>
-                </li>
-                 <li class="itemRight" v-for="(page2Item, index) in page2List" :key="index">
-                  <img :src="page2Item.picUrl" alt="">
-                  <span class="desc">{{page2Item.title}}</span>
-                  <div class="lookDetail">
-                    <img class="userImg" :src="page2Item.avatar" alt="">
-                    <span class="name">{{page2Item.nickname}}</span>
-                    <span class="see">200k</span>
-                  </div>
-                </li>
-            </ul>
+          <!-- <Waterfall :scrollBttom="scrollBttom"/> -->
+           <div class="waterfallContainer"> 
+            <div class="boxLeft">
+                <div class="item" v-for="(leftItem, index) in worthListLeft" :key="index">
+                    <img :src="leftItem.newAppBanner ? leftItem.newAppBanner : leftItem.picUrl" alt="">
+                    <div class="desc">{{leftItem.title}}</div>
+                    <div class="user">
+                        <img :src="leftItem.avatar" alt="">
+                        <span class="username">{{leftItem.nickname}}</span>
+                        <div class="look">{{leftItem.readCount}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="boxRight">
+                <div class="item" v-for="(leftItem, index) in worthListRight" :key="index">
+                    <img :src="leftItem.newAppBanner ? leftItem.newAppBanner : leftItem.picUrl" alt="">
+                    <div class="desc">{{leftItem.title}}</div>
+                    <div class="user">
+                        <img :src="leftItem.avatar" alt="">
+                        <span class="username">{{leftItem.nickname}}</span>
+                        <div class="look">{{leftItem.readCount}}</div>
+                    </div>
+                </div>
+            </div>
           </div>
         </div>
       </div>
@@ -115,10 +71,11 @@ export default {
   data() {
     return {
       navListData: [],
-      topics: [],
-      topics2:[],
-      page1List: [],
-      page2List: [],
+      worthList: [],
+      worthListLeft: [],
+      worthListRight: [],
+      worthUpdate: [],
+      size: 0
     }
   },
   methods: {
@@ -128,7 +85,7 @@ export default {
           click: true,
           scrollY: true,
           // momentum:false,
-          bounce: false,
+          // bounce: false,
           scrollbar: true,
           probeType:1,
           scrollEnd: true,
@@ -136,78 +93,109 @@ export default {
         })
         scrollEle.on('scroll',(pos)=>{
           
-            // console.log(scrollEle.y)
-            // console.log(scrollEle.maxScrollY+30)
             if(scrollEle.y < scrollEle.maxScrollY+30) {
-              // console.log('触底了')
-              let that = this
-              console.log('1',this)
-              function update(that){
-                let page = 2
-                console.log('2',this)
-                console.log('22')
-                function getreq(that) {
-                  page ++
-                  console.log(page)
-                  console.log('3',this)
-                  that.getWorthList(page,1,true)
-                  that.getWorthListR(page,1,true)
-                }
-                getreq(that)
-              }
-              update(that)
-              scrollEle.refresh()
-              console.log(this.page1List,this.page2List)
+                clearTimeout(this.timer)
+                this.timer = setTimeout(() => {
+                  console.log('触底了')
+                  this.updateup()
+                  this.size++
+                },100);
             }
         })
       })
     },
-    async getWorthBuy() {
+    // 上拉更新
+    updateup() {
+      this.worthUpdate.forEach((item,index)=>{
+          if(index % 2 === 0) {
+            this.worthListLeft.push(item[this.size])
+          }else {
+            this.worthListRight.push(item[this.size])
+          }
+      })
+    },
+    async getWorthBuyNav() {
       let result = await axios.get('/m/topic/v1/know/navWap.json')
       this.navListData = result.data.data.navList
     } ,
-    async getWorthTop() {
-      let result = await axios.get('/m/topic/v1/find/recManual.json')
-      this.topics = result.data.data[0].topics
-      this.topics2 = result.data.data[1].topics
-    },
-    async getWorthList(page,size,update=false) {
-      if(update) {
-        let result = await axios.get(`/m/topic/v1/find/recAuto.json?page=${page++}&size=${size}`)
-        let data = result.data.data.result[0].topics
-        data.forEach((item)=>{
-            this.page1List.push(item)
-          })
-        }else {
-          let result = await axios.get(`/m/topic/v1/find/recAuto.json?page=1&size=1`)
-          let data = result.data.data.result[0].topics
-          this.page1List = data
-        }
-    },
-    async getWorthListR(page,size,update=false) {
-      if(update) {
-          let result = await axios.get(`/m/topic/v1/find/recAuto.json?page=${page}&size=${size}`)
-          let data = result.data.data.result[0].topics
-          data.forEach((item)=>{
-            this.page2List.push(item)
-          })
-        }else {
-          let result = await axios.get(`/m/topic/v1/find/recAuto.json?page=2&size=1`)
-          let data = result.data.data.result[0].topics
-          this.page2List = data
-        }
-    },
+    // 第一次
+        async getWorthBuy() {
+            let worthListData = await axios.get('/m/topic/v1/find/recManual.json')
+            worthListData.data.data.forEach((item, index) => {
+                item.topics.forEach((item, index)=>{
+                    this.worthList.push(item) 
+                })
+            })
+        },
+        // 触底加载
+        async getWorthBuyUpdate() {
+            let worthListData = await axios.get('m//topic/v1/find/recAuto.json')
+            console.log(worthListData)
+            worthListData.data.data.result.forEach((item, index) => {
+                // item.topics.forEach((item, index)=>{
+                //     this.worthUpdate.push(item) 
+                // })
+                this.worthUpdate.push(item.topics) 
+            })
+        },
+    // async getWorthTop() {
+    //   let result = await axios.get('/m/topic/v1/find/recManual.json')
+    //   this.topics = result.data.data[0].topics
+    //   this.topics2 = result.data.data[1].topics
+    // },
+    // async getWorthList(page,size,update=false) {
+    //   if(update) {
+    //     let result = await axios.get(`/m/topic/v1/find/recAuto.json?page=${page++}&size=${size}`)
+    //     let data = result.data.data.result[0].topics
+    //     data.forEach((item)=>{
+    //         this.page1List.push(item)
+    //       })
+    //     }else {
+    //       let result = await axios.get(`/m/topic/v1/find/recAuto.json?page=1&size=1`)
+    //       let data = result.data.data.result[0].topics
+    //       this.page1List = data
+    //     }
+    // },
+    // async getWorthListR(page,size,update=false) {
+    //   if(update) {
+    //       let result = await axios.get(`/m/topic/v1/find/recAuto.json?page=${page}&size=${size}`)
+    //       let data = result.data.data.result[0].topics
+    //       data.forEach((item)=>{
+    //         this.page2List.push(item)
+    //       })
+    //     }else {
+    //       let result = await axios.get(`/m/topic/v1/find/recAuto.json?page=2&size=1`)
+    //       let data = result.data.data.result[0].topics
+    //       this.page2List = data
+    //     }
+    // },
   },
   mounted() {
-    this.getWorthBuy()
     this.initScroll()
-    this.getWorthTop()
-    this.getWorthList(1,1)
-    this.getWorthListR(2,1)
-  },
-  beforeUpdate(){
+    this.getWorthBuyNav()
+    // this.getWorthTop()
+    // this.getWorthList(1,1)
+    // this.getWorthListR(2,1)
 
-  }
+     // 第一次
+    this.getWorthBuy()
+    // 触底加载
+    this.getWorthBuyUpdate()
+  },
+  computed: {
+        // 0 1 2 3 4
+        // l : 0 2 4
+        // r : 1 3
+        worthListObj() {
+            return this.worthList.forEach((item, index)=>{
+                if(index % 2 === 0) {
+                    this.worthListLeft.push(item)
+                }else {
+                    this.worthListRight.push(item)
+                }
+            })
+        },
+    },
 }
 </script>
 
@@ -291,121 +279,156 @@ export default {
      }
    }
  }
-  .waterfall {
+ .waterfallContainer {
+    background-color: #eee;
     width: 100%;
     display: flex;
-    box-sizing: border-box;
-    padding: 30px 20px 0 20px;
-    justify-content: space-between;
-    .listLeft {
-      .itemLeft {
-        width: 345px;
-        // height: 400px;
-        background-color: #fff;
-        border-radius: 20px;
-        margin-bottom: 20px;
-        // text-align: center;
-        &:first-child {
-          width: 345px;
-          height: 555px;
-          .lookDetail {
-            margin-top: 30px;
-            .userImg {
-              margin: 0 20px;
+    justify-content: space-around;
+    .boxLeft, .boxRight {
+        width: 48%;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        .item {
+            margin: 10px auto;
+            width: 100%;
+            height: auto;
+            background-color: #fff;
+            border-radius: 20px;
+        }
+        img {
+            border-radius: 20px 20px 0 0 ;
+            width: 100%;
+            height: auto;
+        }
+        .desc {
+            font-size: 30px;
+            box-sizing: border-box;
+            padding: 10px 10px 0 10px;
+        }
+        .user {
+            width: 100%;
+            height: 90px;
+            line-height: 90px;
+            box-sizing: border-box;
+            padding: 10px 10px 0 10px;
+            img {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                vertical-align: middle;
+                margin-right: 10px;
             }
-          }
+            .look {
+                float: right;
+                margin-right: 10px;
+            }
         }
-        &:nth-child(2) {
-          width: 345px;
-          height: 400px;
-          img {
-            width: 346px;
-            height: 200px;
-          }
-          .lookDetail {
-            margin-top: 30px;
-          }
-        }
-        // &:nth-child(3) {
-        //   width: 345px;
-        //   height: 692px;
-        //   background-color: #ffe1b2;
-        //   img {
-        //     width: 345px;
-        //     height: 460px;
-        //   }
-        //   .lookDetail {
-        //     margin-top: 40px;
-        //   }
-        // }
-        img{
-          width: 345px;
-          height: 355px;
-          border-radius: 20px;
-        }
-        .desc {
-          font-size: 30px;
-          display: block;
-          width: 100%;
-          padding: 10px 10px 0 10px;
-        }
-        .lookDetail {
-          width: 100%;
-          margin-top: 10px;
-          .userImg {
-            width: 48px;
-            height: 48px;
-            vertical-align: middle;
-            margin: 0 20px;
-          }
-        }
-      }
     }
-    .listRight {
-      .itemRight {
-        width: 345px;
-        height: 500px;
-        background-color: #fff;
-        border-radius: 20px;
-        margin-bottom: 20px;
-        &:first-child {
-          width: 345px;
-          height: 500px; 
-        }
-        &:nth-child(2) {
-          width: 345px;
-          height: 400px;
-          img {
-            width: 346px;
-            height: 200px;
-          }
-          .lookDetail {
-            margin-top: 30px;
-          }
-        }
-        img{
-          width: 355px;
-          height: 355px;
-          border-radius: 20px;
-        }
-        .desc {
-          font-size: 30px;
-          display: block;
-          width: 100%;
-          padding: 10px 10px 0 10px;
-        }
-        .lookDetail {
-          width: 100%;
-          .userImg {
-            width: 48px;
-            height: 48px;
-            vertical-align: middle;
-            margin: 0 20px;
-          }
-        }
-      }
-    }
-  }
+}
+  // .waterfall {
+  //   width: 100%;
+  //   display: flex;
+  //   box-sizing: border-box;
+  //   padding: 30px 20px 0 20px;
+  //   justify-content: space-between;
+  //   .listLeft {
+  //     .itemLeft {
+  //       width: 345px;
+  //       height: auto;
+  //       background-color: #fff;
+  //       border-radius: 20px;
+  //       margin-bottom: 20px;
+  //       // text-align: center;
+  //       &:first-child {
+  //         width: 345px;
+  //         height: 555px;
+  //         .lookDetail {
+  //           margin-top: 30px;
+  //           .userImg {
+  //             margin: 0 20px;
+  //           }
+  //         }
+  //       }
+  //       &:nth-child(2) {
+  //         width: 345px;
+  //         height: 400px;
+  //         img {
+  //           width: 346px;
+  //           height: 200px;
+  //         }
+  //         .lookDetail {
+  //           margin-top: 30px;
+  //         }
+  //       }
+  //       img{
+  //         width: 345px;
+  //         height: 355px;
+  //         border-radius: 20px;
+  //       }
+  //       .desc {
+  //         font-size: 30px;
+  //         display: block;
+  //         width: 100%;
+  //         padding: 10px 10px 0 10px;
+  //       }
+  //       .lookDetail {
+  //         width: 100%;
+  //         margin-top: 10px;
+  //         .userImg {
+  //           width: 48px;
+  //           height: 48px;
+  //           vertical-align: middle;
+  //           margin: 0 20px;
+  //         }
+  //       }
+  //     }
+  //   }
+  //   .listRight {
+  //     .itemRight {
+  //       width: 345px;
+  //       height: 500px;
+  //       background-color: #fff;
+  //       border-radius: 20px;
+  //       margin-bottom: 20px;
+  //       &:first-child {
+  //         width: 345px;
+  //         height: 500px; 
+  //       }
+  //       &:nth-child(2) {
+  //         width: 345px;
+  //         height: 400px;
+  //         img {
+  //           width: 346px;
+  //           height: 200px;
+  //         }
+  //         .lookDetail {
+  //           margin-top: 30px;
+  //         }
+  //       }
+  //       img{
+  //         width: 355px;
+  //         height: 355px;
+  //         border-radius: 20px;
+  //       }
+  //       .desc {
+  //         font-size: 30px;
+  //         display: block;
+  //         width: 100%;
+  //         padding: 10px 10px 0 10px;
+  //       }
+  //       .lookDetail {
+  //         width: 100%;
+  //         .userImg {
+  //           width: 48px;
+  //           height: 48px;
+  //           vertical-align: middle;
+  //           margin: 0 20px;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 }
  
 </style>

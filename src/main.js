@@ -13,7 +13,7 @@ import {
   DropdownItem,
   Form,
   Field,
-  CountDown 
+  CountDown,
 } from 'vant';
 
 Vue.config.productionTip = false

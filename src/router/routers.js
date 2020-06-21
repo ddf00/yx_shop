@@ -5,6 +5,8 @@ import ShopCar from "../pages/ShopCar";
 import Personal from "../pages/Personal";
 import Login from "../pages/Login";
 import CateNavList from "../components/cateNavList";
+import Search from "../pages/Search";
+import waterfall from "../components/waterfall";
 export default [
     {
         path: "/",
@@ -36,5 +38,16 @@ export default [
     {
         path: '/catenavlist',
         component: CateNavList
+    },
+    {
+        path: "/search",
+        component: Search,
+        meta: {
+            isHide: true
+        }
+    },
+    {
+        path: '/waterfall',
+        component: waterfall
     }
 ]

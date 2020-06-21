@@ -18,7 +18,7 @@
           <van-icon size="20" name="shopping-cart-o" />
           <div>购物车</div> 
         </van-tabbar-item>
-        <van-tabbar-item class="tabbarItem" replace to="/personal">
+        <van-tabbar-item  class="tabbarItem" replace to="/login">
           <van-icon size="20" name="user-o" />
           <div>个人中心</div>
         </van-tabbar-item>
